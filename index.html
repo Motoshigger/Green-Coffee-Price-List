@@ -4888,8 +4888,14 @@
 <title>生豆価格表（${withFreight ? "運賃込み" : "運賃抜き"}）</title>
 <style>
   * { box-sizing: border-box; }
-  @page { size: A4 landscape; margin: 7mm 10mm; }
   body { font-family: "Yu Gothic","Hiragino Sans","Noto Sans JP",sans-serif; color:#1a1a1a; background:#fff; margin:0; padding:10px; }
+  body.portrait .quote-doc table { font-size:6.2px; }
+  body.portrait .quote-doc th, body.portrait .quote-doc td { padding:1px 3px; }
+  body.portrait .quote-doc .price-main { font-size:8px; }
+  body.portrait .quote-doc .price-total { font-size:5px; }
+  body.portrait .quote-doc tr.group-row td { font-size:8px; }
+  body.portrait .quote-doc col.c-name { width:26%; }
+  body.portrait .quote-doc col.c-remarks { width:12%; }
   .quote-doc { max-width: 100%; margin: 0 auto; }
   .quote-doc h1 { font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:15px; margin:0 0 1px; }
   .quote-doc .quote-meta { font-size:8.5px; color:#444; margin-bottom:4px; line-height:1.35; }
@@ -4928,12 +4934,23 @@
   .desc-card dd { margin:0; }
   .desc-card .desc-story { font-size:10.5px; line-height:1.6; margin:0 0 6px; }
   .desc-card .back-link { font-size:10px; color:#1a1a1a; }
-  .print-btn { margin-bottom:16px; padding:9px 18px; font-size:13px; font-weight:600; border:1px solid #1a1a1a; border-radius:8px; background:#1a1a1a; color:#fff; cursor:pointer; }
+  .print-btn { margin-bottom:16px; margin-right:8px; padding:9px 18px; font-size:13px; font-weight:600; border:1px solid #1a1a1a; border-radius:8px; background:#1a1a1a; color:#fff; cursor:pointer; }
+  .print-btn.secondary { background:#fff; color:#1a1a1a; }
   @media print { .print-btn { display:none; } body { padding:0; } }
-</style></head>
+</style>
+<style id="pageOrientStyle">@page { size: A4 landscape; margin: 7mm 10mm; }</style>
+</head>
 <body>
-  <button class="print-btn" onclick="window.print()">この見積書を印刷 / PDF保存</button>
+  <button class="print-btn" onclick="setOrient('landscape')">横向きで印刷 / PDF保存</button>
+  <button class="print-btn secondary" onclick="setOrient('portrait')">縦向きで印刷 / PDF保存</button>
   ${inner}
+  <script>
+    function setOrient(mode) {
+      document.getElementById("pageOrientStyle").textContent = "@page { size: A4 " + mode + "; margin: 7mm 10mm; }";
+      document.body.classList.toggle("portrait", mode === "portrait");
+      window.print();
+    }
+  </script>
 </body></html>`;
   }
 
