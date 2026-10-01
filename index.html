@@ -4544,13 +4544,10 @@
               ${Object.keys(STOCK_LABEL).map(k => `<option value="${k}" ${row.stock === k ? "selected" : ""}>${STOCK_LABEL[k]}</option>`).join("")}
             </select></td>
         <td class="arrival col-arrival"><input type="text" class="text-input arrival-input" value="${row.arrival}" data-arrival="${row.id}"></td>
-        <td class="col-cls">${row.cost === null
-          ? "—"
-          : `<select class="class-select ${row.cls === "spec" ? "spec" : "comm"}" data-id="${row.id}">
+        <td class="col-cls"><select class="class-select ${row.cls === "spec" ? "spec" : "comm"}" data-id="${row.id}">
                <option value="spec" ${row.cls === "spec" ? "selected" : ""}>スペシャルティ</option>
                <option value="comm" ${row.cls === "comm" ? "selected" : ""}>コモディティ</option>
-             </select>`
-        }</td>
+             </select></td>
         <td class="num cost col-cost">${row.cost === null ? "—" : `<input type="number" step="1" value="${row.cost}" data-cost="${row.id}">`}${prevCostHtml(row)}</td>
         <td class="num margin-cell col-divider col-marginbag">
           <input type="number" step="1" class="margin-input" value="${margin(row, "bag")}" data-margin-bag="${row.id}">
