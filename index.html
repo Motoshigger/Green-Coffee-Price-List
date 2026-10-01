@@ -4821,7 +4821,7 @@
         <td class="num price-cell">${bagCell}</td>
         <td>${STOCK_LABEL[r.stock]}</td>
         <td>${(r.stock === "wait" || r.stock === "disc") ? r.arrival : "-"}</td>
-        <td class="remarks-cell"></td>
+        <td class="remarks-cell">${r.isNew ? '<span class="new-remark">NEW！</span>' : ""}</td>
       </tr>`;
     }).join("");
 
@@ -4914,6 +4914,7 @@
   .quote-doc col.c-price { width:13%; }
   .quote-doc col.c-remarks { width:18%; }
   .quote-doc td.remarks-cell { white-space:normal; }
+  .quote-doc .new-remark { color:#2ecc40; font-weight:700; }
   .quote-doc .quote-footer { margin-top:4px; font-size:7.5px; color:#555; line-height:1.3; }
   .quote-doc a.jump-link { color:#1a1a1a; text-decoration:none; }
   .desc-appendix { margin-top:18px; page-break-before:always; }
