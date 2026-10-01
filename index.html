@@ -4332,7 +4332,7 @@
   function displayPack(pack) {
     const stripped = pack.replace(/^(SUM|AN|W|N|H)[・\s]/, "").trim();
     const m = stripped.match(/^([A-Z]+)(\d+)$/);
-    if (m && PACK_CODE[m[1]]) return `${PACK_CODE[m[1]]} ${m[2]}kg`;
+    if (m && PACK_CODE[m[1]]) return `${m[2]}kg ${PACK_CODE[m[1]]}`;
     return stripped || "-";
   }
 
@@ -4817,8 +4817,8 @@
         <td class="name-cell">${nameCell}</td>
         <td>${r.packLabel}</td>
         <td>${PROCESS_LABEL[r.process] === "（未選択）" ? "-" : PROCESS_LABEL[r.process]}</td>
-        <td class="num price-cell">${bagCell}</td>
         <td class="num price-cell">${smallCell}</td>
+        <td class="num price-cell">${bagCell}</td>
         <td>${STOCK_LABEL[r.stock]}</td>
         <td>${(r.stock === "wait" || r.stock === "disc") ? r.arrival : "-"}</td>
         <td class="remarks-cell"></td>
@@ -4864,8 +4864,8 @@
               <th>商品名</th>
               <th>入り数</th>
               <th>精選方法</th>
-              <th class="num wrap">正袋価格<br>(円/kg)</th>
               <th class="num wrap">10kg単価<br>(円/kg)</th>
+              <th class="num wrap">正袋価格<br>(円/kg)</th>
               <th>在庫状況</th>
               <th>入荷予定</th>
               <th>備考</th>
