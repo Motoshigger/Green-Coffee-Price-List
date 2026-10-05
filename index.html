@@ -808,6 +808,11 @@
         <button data-mode="active" class="active">在庫・入荷予定のみ</button>
         <button data-mode="all">完売・終売も表示</button>
       </div>
+      <div class="chip-toggle" id="clsToggle">
+        <button data-mode="all" class="active">全分類</button>
+        <button data-mode="spec">スペシャルティのみ</button>
+        <button data-mode="comm">コモディティのみ</button>
+      </div>
       <button class="btn-add" id="addRowBtn">＋ 商品を追加</button>
       <button class="btn-add" id="colToggleBtn">列を表示・非表示</button>
     </div>
@@ -4431,6 +4436,7 @@
 
   let supplierMode = "all";
   let stockMode = "active";
+  let clsMode = "all";
   let searchTerm = "";
 
   function fmt(n) {
@@ -4496,6 +4502,7 @@
 
     let visible = state.filter(r => {
       if (supplierMode !== "all" && r.supplier !== supplierMode) return false;
+      if (clsMode !== "all" && r.cls !== clsMode) return false;
       if (stockMode === "active") {
         if (r.stock === "out") return false;
         if (r.stock === "disc") {
@@ -4673,6 +4680,14 @@
     btn.addEventListener("click", () => {
       stockMode = btn.dataset.mode;
       document.querySelectorAll("#stockToggle button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    });
+  });
+  document.querySelectorAll("#clsToggle button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      clsMode = btn.dataset.mode;
+      document.querySelectorAll("#clsToggle button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       render();
     });
