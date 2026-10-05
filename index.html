@@ -4844,7 +4844,7 @@
       return `${groupRow}<tr>
         <td class="name-cell">${nameCell}</td>
         <td>${r.packLabel}</td>
-        <td>${PROCESS_LABEL[r.process] === "（未選択）" ? "-" : PROCESS_LABEL[r.process]}</td>
+        <td class="process-cell">${PROCESS_LABEL[r.process] === "（未選択）" ? "-" : PROCESS_LABEL[r.process]}</td>
         <td class="num price-cell">${smallCell}</td>
         <td class="num price-cell">${bagCell}</td>
         <td>${STOCK_LABEL[r.stock]}</td>
@@ -4943,11 +4943,12 @@
   .quote-doc tr { page-break-inside: avoid; }
   .quote-doc col.c-name { width:32%; }
   .quote-doc col.c-pack { width:7%; }
-  .quote-doc col.c-process { width:7%; }
+  .quote-doc col.c-process { width:12%; }
   .quote-doc col.c-stock { width:8%; }
   .quote-doc col.c-arrival { width:8%; }
-  .quote-doc col.c-price { width:14%; }
-  .quote-doc col.c-remarks { width:10%; }
+  .quote-doc col.c-price { width:11%; }
+  .quote-doc col.c-remarks { width:11%; }
+  .quote-doc td.process-cell { white-space:nowrap; }
   .quote-doc td.remarks-cell { white-space:normal; }
   .quote-doc .new-remark { color:#2ecc40; font-weight:700; }
   .quote-doc .quote-footer { margin-top:5px; font-size:9pt; color:#555; line-height:1.25; }
