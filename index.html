@@ -4334,6 +4334,17 @@
   const PROCESS_LABEL = { "": "（未選択）", natural: "ナチュラル", washed: "ウォッシュド", honey: "ハニー", sumatra: "スマトラ式" };
 
   const PACK_CODE = { G: "GP", E: "ET", P: "PB", V: "VP", B: "麻袋" };
+  function normalizePackLabel(label) {
+    if (!label) return label;
+    let s = label.replace(/[Ａ-Ｚａ-ｚ０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/　/g, ' ');
+    s = s.replace(/[・+]/g, ' ').replace(/\s+/g, ' ').trim();
+    const m = s.match(/(\d+(?:\.\d+)?)\s*kg?/i);
+    if (!m) return label;
+    const weight = m[1];
+    const rest = (s.slice(0, m.index) + s.slice(m.index + m[0].length)).trim().toUpperCase();
+    return rest ? `${weight}kg ${rest}` : `${weight}kg`;
+  }
+
   function displayPack(pack) {
     const stripped = pack.replace(/^(SUM|AN|W|N|H)[・\s]/, "").trim();
     const m = stripped.match(/^([A-Z]+)(\d+)$/);
@@ -4542,7 +4553,7 @@
         <td class="product col-product"><input type="text" class="text-input name-input" value="${row.product}" data-product="${row.id}">${row.isNew ? '<span class="new-badge">NEW</span>' : ""}${DESCRIPTIONS[row.supplier + "|" + row.origin + "|" + row.product] ? '<span class="desc-badge" title="商品詳細あり">🔍 詳細あり</span>' : ""}</td>
         <td class="supplier col-supplier"><input type="text" class="text-input supplier-input" value="${row.supplier}" data-supplier="${row.id}"></td>
         <td class="pack col-pack">
-          <input type="text" class="pack-input ${row.packAuto ? "auto" : ""}" value="${row.packLabel}" data-pack="${row.id}" title="${row.packAuto ? "重量が読み取れなかったため原産国別の目安値を自動入力しています。手入力で修正できます。" : ""}">
+          <input type="text" class="pack-input ${row.packAuto ? "auto" : ""}" value="${normalizePackLabel(row.packLabel)}" data-pack="${row.id}" title="${row.packAuto ? "重量が読み取れなかったため原産国別の目安値を自動入力しています。手入力で修正できます。" : ""}">
         </td>
         <td class="col-process"><select class="process-select ${row.process ? "" : "unset"}" data-process="${row.id}">
               ${Object.keys(PROCESS_LABEL).map(k => `<option value="${k}" ${row.process === k ? "selected" : ""}>${PROCESS_LABEL[k]}</option>`).join("")}
@@ -4827,11 +4838,12 @@
       }
       const descKey = r.supplier + "|" + r.origin + "|" + r.product;
       const desc = DESCRIPTIONS[descKey];
-      let nameCell = r.product;
+      const displayProduct = r.product.startsWith(r.origin) ? r.product.slice(r.origin.length).trim() : r.product;
+      let nameCell = displayProduct;
       if (desc) {
         const anchorId = "d" + descIdx;
-        nameCell = `<a class="jump-link" href="#${anchorId}">${r.product} 🔍</a>`;
-        descEntries.push({ id: anchorId, product: r.product, origin: r.origin, ...desc });
+        nameCell = `<a class="jump-link" href="#${anchorId}">${displayProduct} 🔍</a>`;
+        descEntries.push({ id: anchorId, product: displayProduct, origin: r.origin, ...desc });
         descIdx++;
       }
       const bagWeightMatch = r.packLabel.match(/(\d+(?:\.\d+)?)\s*kg/i);
@@ -4843,7 +4855,7 @@
         : `<div class="price-main">¥${fmt(smallPrice)}</div><div class="price-total">10kg　¥${fmt(smallPrice * 10)}</div>`;
       return `${groupRow}<tr>
         <td class="name-cell">${nameCell}</td>
-        <td>${r.packLabel}</td>
+        <td>${normalizePackLabel(r.packLabel)}</td>
         <td class="process-cell">${PROCESS_LABEL[r.process] === "（未選択）" ? "-" : PROCESS_LABEL[r.process]}</td>
         <td class="num price-cell">${smallCell}</td>
         <td class="num price-cell">${bagCell}</td>
