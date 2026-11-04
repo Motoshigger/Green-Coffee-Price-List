@@ -329,6 +329,17 @@
     white-space: nowrap;
   }
 
+  thead th.col-product, tbody td.product {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--surface);
+  }
+
+  thead th.col-product {
+    z-index: 3;
+  }
+
   thead th.num, td.num { text-align: right; }
 
   tbody td {
@@ -4345,6 +4356,20 @@
     return rest ? `${weight}kg ${rest}` : `${weight}kg`;
   }
 
+  function stripOriginFromProduct(product, origin) {
+    if (origin && product.startsWith(origin)) return product.slice(origin.length).trim();
+    return product;
+  }
+
+  function recomposeProduct(product, origin, newDisplay) {
+    if (origin && product.startsWith(origin)) {
+      const rest = product.slice(origin.length);
+      const leadingSpace = rest.match(/^\s*/)[0];
+      return origin + leadingSpace + newDisplay;
+    }
+    return newDisplay;
+  }
+
   function displayPack(pack) {
     const stripped = pack.replace(/^(SUM|AN|W|N|H)[・\s]/, "").trim();
     const m = stripped.match(/^([A-Z]+)(\d+)$/);
@@ -4550,7 +4575,7 @@
       tr.className = row.stock === "out" ? "soldout" : "";
       tr.innerHTML = `
         <td class="origin col-origin"><input type="text" class="text-input origin-input" value="${row.origin}" data-origin="${row.id}"></td>
-        <td class="product col-product"><input type="text" class="text-input name-input" value="${row.product}" data-product="${row.id}">${row.isNew ? '<span class="new-badge">NEW</span>' : ""}${DESCRIPTIONS[row.supplier + "|" + row.origin + "|" + row.product] ? '<span class="desc-badge" title="商品詳細あり">🔍 詳細あり</span>' : ""}</td>
+        <td class="product col-product"><input type="text" class="text-input name-input" value="${stripOriginFromProduct(row.product, row.origin)}" data-product="${row.id}">${row.isNew ? '<span class="new-badge">NEW</span>' : ""}${DESCRIPTIONS[row.supplier + "|" + row.origin + "|" + row.product] ? '<span class="desc-badge" title="商品詳細あり">🔍 詳細あり</span>' : ""}</td>
         <td class="supplier col-supplier"><input type="text" class="text-input supplier-input" value="${row.supplier}" data-supplier="${row.id}"></td>
         <td class="pack col-pack">
           <input type="text" class="pack-input ${row.packAuto ? "auto" : ""}" value="${normalizePackLabel(row.packLabel)}" data-pack="${row.id}" title="${row.packAuto ? "重量が読み取れなかったため原産国別の目安値を自動入力しています。手入力で修正できます。" : ""}">
@@ -4651,7 +4676,7 @@
         render();
       });
       const nameInput = tr.querySelector(".name-input");
-      if (nameInput) nameInput.addEventListener("input", e => { row.product = e.target.value; });
+      if (nameInput) nameInput.addEventListener("input", e => { row.product = recomposeProduct(row.product, row.origin, e.target.value); });
       const supplierInput = tr.querySelector(".supplier-input");
       if (supplierInput) supplierInput.addEventListener("input", e => { row.supplier = e.target.value; });
       const arrivalInput = tr.querySelector(".arrival-input");
